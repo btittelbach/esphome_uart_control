@@ -19,16 +19,15 @@ void UARTBinarySensor::parse_input(char data) {
     return;
   }
   // Is there a lambda registered
-  // call it with the pre converted value and the raw data array
-  // TODO TODO TODO //
-  // if (this->transform_func_.has_value()) {
-  //   // the lambda can parse the response itself
-  //   auto val = (*this->transform_func_)(this, value, data); // data needs is char but needs to be 'const std::vector<unsigned char>&' for lambda
-  //   if (val.has_value()) {
-  //     ESP_LOGV(TAG, "Value overwritten by lambda");
-  //     value = val.value();
-  //   }
-  // }
+  // call it with the pre converted value and the raw data
+  if (this->f_.has_value()) {
+    // the lambda can parse the response itself
+    auto val = (*this->f_)(this, value, data); // data needs is char but needs to be 'const std::vector<unsigned char>&' for lambda
+    if (val.has_value()) {
+      ESP_LOGV(TAG, "Value overwritten by lambda");
+      value = val.value();
+    }
+  }
   this->publish_state(value);
 }
 

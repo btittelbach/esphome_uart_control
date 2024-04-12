@@ -26,11 +26,11 @@ class UARTBinarySensor : public Component, public binary_sensor::BinarySensor, p
 
   void dump_config() override;
 
-  using transform_func_t = std::function<optional<bool>(UARTBinarySensor *, bool, const std::vector<uint8_t> &)>;
-  void set_template(transform_func_t &&f) { this->transform_func_ = f; }
+  using f_t = std::function<optional<bool>(UARTBinarySensor *, bool, char)>;
+  void set_template(f_t &&f) { this->f_ = f;}
 
  protected:
-  optional<transform_func_t> transform_func_{nullopt};
+  optional<f_t> f_{};
 };
 
 }  // namespace uart_controller
