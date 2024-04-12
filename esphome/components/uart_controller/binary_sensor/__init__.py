@@ -20,8 +20,8 @@ DEPENDENCIES = ["uart_controller"]
 CODEOWNERS = ["@btittelbach"]
 
 
-UartBinarySensor = uart_controller_ns.class_(
-    "UartBinarySensor", cg.Component, binary_sensor.BinarySensor, SensorItem
+UARTBinarySensor = uart_controller_ns.class_(
+    "UARTBinarySensor", cg.Component, binary_sensor.BinarySensor, SensorItem
 )
 
 def validate_control_character(config):
@@ -58,7 +58,7 @@ def validate_control_character(config):
 
 
 CONFIG_SCHEMA = cv.All(
-    binary_sensor.binary_sensor_schema(UartBinarySensor)
+    binary_sensor.binary_sensor_schema(UARTBinarySensor)
     .extend(cv.COMPONENT_SCHEMA)
     .extend(UartItemBaseSchema)
     .extend(
@@ -78,12 +78,12 @@ async def to_code(config):
         config[CONF_ID],
         config[CONF_CTRL_CHAR_ON],
         config[CONF_CTRL_CHAR_OFF],
-        config[CONF_UART_CONTROLLER],
+        # config[CONF_UART_CONTROLLER],
     )
     await cg.register_component(var, config)
     await binary_sensor.register_binary_sensor(var, config)
 
     paren = await cg.get_variable(config[CONF_UART_CONTROLLER])
     cg.add(paren.add_sensor_item(var))
-    await add_uart_base_properties(var, config, UartBinarySensor, bool, bool)
+    await add_uart_base_properties(var, config, UARTBinarySensor, bool, bool)
 

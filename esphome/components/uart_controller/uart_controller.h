@@ -19,7 +19,6 @@ class SensorItem {
  public:
   virtual void parse_input(char data) = 0;
 
-  SensorValueType sensor_value_type;
 };
 
 

@@ -35,7 +35,7 @@ void UartController::loop() {
       char cmdByte = (byte) incomingByte;
       // ask all sensors to process the byte
       for (auto &it : sensorset_) {
-        it->process_char(cmdByte);
+        it->parse_input(cmdByte);
       }
     }
   }

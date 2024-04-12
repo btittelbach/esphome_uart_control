@@ -38,6 +38,7 @@ CONFIG_SCHEMA = cv.All(
 )
 
 
+## have the sub-items auto-use as default connection to controller: CONF_UART_CONTROLLER
 UartItemBaseSchema = cv.Schema(
     {
         cv.GenerateID(CONF_UART_CONTROLLER): cv.use_id(UartController),
@@ -48,12 +49,6 @@ UartItemBaseSchema = cv.Schema(
 async def add_uart_base_properties(
     var, config, sensor_type, lamdba_param_type=cg.float_, lamdba_return_type=float
 ):
-    if CONF_CUSTOM_COMMAND in config:
-        cg.add(var.set_custom_data(config[CONF_CUSTOM_COMMAND]))
-
-    if config[CONF_RESPONSE_SIZE] > 0:
-        cg.add(var.set_register_size(config[CONF_RESPONSE_SIZE]))
-
     if CONF_LAMBDA in config:
         template_ = await cg.process_lambda(
             config[CONF_LAMBDA],
