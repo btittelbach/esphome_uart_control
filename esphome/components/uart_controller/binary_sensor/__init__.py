@@ -45,11 +45,11 @@ def validate_control_character(config):
         raise cv.Invalid(
             f" {CONF_CTRL_CHAR_ON} must differ from {CONF_CTRL_CHAR_OFF}"
         )
-    if config[CONF_CTRL_CHAR_ON] not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!?<>&=;:.,*+-_@#":
+    if config[CONF_CTRL_CHAR_ON] not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!?()[]}{<>&=;:.,*+-_@#":
         raise cv.Invalid(
             f" {CONF_CTRL_CHAR_ON} is using an invalid character"
         )
-    if config[CONF_CTRL_CHAR_OFF] not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!?<>&=;:.,*+-_@#":
+    if config[CONF_CTRL_CHAR_OFF] not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!?()[]}{<>&=;:.,*+-_@#":
         raise cv.Invalid(
             f" {CONF_CTRL_CHAR_OFF} is using an invalid character"
         )
