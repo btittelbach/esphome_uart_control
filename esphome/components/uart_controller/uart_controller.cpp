@@ -29,10 +29,11 @@ void UartController::loop() {
   // Incoming data to process?
   if (available() > 0) {
     // read the incoming byte:
-    int incomingByte = Serial.read();
+    uint8_t incomingByte = 0;
+    this->read_byte(&incomingByte);
     if (incomingByte >= 0)
     {
-      char cmdByte = (byte) incomingByte;
+      char cmdByte = (char) incomingByte;
       // ask all sensors to process the byte
       for (auto &it : sensorset_) {
         it->parse_input(cmdByte);
