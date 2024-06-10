@@ -18,6 +18,7 @@ class UartController;
 class SensorItem {
  public:
   virtual void parse_input(char data) = 0;
+  virtual void dump_config() = 0;
 
 };
 

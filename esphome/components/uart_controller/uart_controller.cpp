@@ -45,7 +45,8 @@ void UartController::loop() {
 void UartController::dump_sensors_() {
   ESP_LOGV(TAG, "sensors");
   for (auto &it : sensorset_) {
-    ESP_LOGV(TAG, "  Sensor on_char=%c off_char=%c", it->ctrl_char_on, it->ctrl_char_off);
+    ESP_LOGV(TAG, "  Sensor 0x%x", it);
+    it->dump_config();
   }
 }
 
