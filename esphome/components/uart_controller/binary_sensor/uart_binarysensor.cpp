@@ -31,7 +31,6 @@ void UARTBinarySensor::parse_input(char data) {
   this->publish_state(value);
 }
 
-// void UARTBinarySensor::dump_config() { LOG_BINARY_SENSOR("", "UART Controller Binary Sensor", this); }
 void UARTBinarySensor::dump_config() {
 #if ESPHOME_LOG_LEVEL >= ESPHOME_LOG_LEVEL_VERBOSE
   LOG_BINARY_SENSOR(TAG, "UARTBinarySensor:  Sensor on_char=%c off_char=%c", ctrl_char_on, ctrl_char_off);

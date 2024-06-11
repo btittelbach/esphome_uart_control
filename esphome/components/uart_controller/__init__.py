@@ -34,7 +34,6 @@ CONFIG_SCHEMA = cv.All(
         }
     )
     .extend(cv.polling_component_schema("60s"))
-    # .extend(uart.uart_device_schema(0x01))
 )
 
 
@@ -67,13 +66,10 @@ async def add_uart_base_properties(
 
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])
-    # cg.add(var.set_command_throttle(config[CONF_COMMAND_THROTTLE]))
-    # cg.add(var.set_offline_skip_updates(config[CONF_OFFLINE_SKIP_UPDATES]))
     await register_uart_device(var, config)
 
 
 async def register_uart_device(var, config):
-    # cg.add(var.set_address(config[CONF_ADDRESS]))
     await cg.register_component(var, config)
     return await uart.register_uart_device(var, config)
 
