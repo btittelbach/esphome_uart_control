@@ -57,10 +57,10 @@ binary_sensor:
     uart_controller: uart_ctrl_1
     on_press:
       then:
-		- .... your actions in response to character ( being sent via serial
+        - .... your actions in response to character ( being sent via serial
     on_release:
       then:
-		- .... your actions in response to character ) being sent via serial
+        - .... your actions in response to character ) being sent via serial
 ```
 
 see [examples/](./examples/) for full examples.

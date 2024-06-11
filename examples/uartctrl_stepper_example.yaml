@@ -1,0 +1,132 @@
+## Control a Stepper Driver and Motor via UART characters using uart_controller
+#===============================================================================
+substitutions:
+  device_name: uartctrl-stepper
+  device_friendly_name: "UARTCtrl Stepper Example"
+  stepper_position_closed: "1000"
+  stepper_position_opened: "0"
+  stepper_speed: "1200"
+#===============================================================================
+
+esphome:
+  name: ${device_name}
+
+esp8266:
+  board: nodemcuv2
+  framework:
+    version: recommended
+
+#
+# wifi:
+#   networks:
+#   - ssid: !secret wifi_name
+#     password: !secret wifi_pass
+#     priority: 10
+#   reboot_timeout: 5h
+#   ap:
+#     ssid: "${device_name} fallback"
+#     password: !secret fallback_pass
+#
+# captive_portal:
+#
+# ota:
+#   password: !secret api_password
+#
+# web_server:
+#   port: 80
+
+## include uart controller
+external_components:
+  - source:
+      type: git
+      url: https://github.com/btittelbach/esphome_uart_control
+      ref: main
+    components: [ "uart_controller" ]
+
+## define USB-UART Input
+## NOTE: do not include a "logger:" anywhere
+uart:
+  baud_rate: 115200
+  id: ctrluart
+  tx_pin: TX
+  rx_pin: RX
+
+## include UART Controller
+uart_controller:
+- id: uart_ctrl_1
+  uart_id: ctrluart
+
+stepper:
+  - platform: a4988
+    id: tmc2209
+    step_pin: D2
+    dir_pin: D4
+    max_speed: "${stepper_speed}"
+    sleep_pin:
+      number: D8 # actually EnablePin
+      inverted: true
+    acceleration: inf
+    deceleration: inf
+
+script:
+  - id: stepper_open
+    then:
+      - stepper.set_speed:
+          id: tmc2209
+          speed: "${stepper_speed}"
+      - stepper.set_target:
+          id: tmc2209
+          target: ${stepper_position_opened}
+  - id: stepper_close
+    then:
+      - stepper.set_speed:
+          id: tmc2209
+          speed: "${stepper_speed}"
+      - stepper.set_target:
+          id: tmc2209
+          target: ${stepper_position_closed}
+  - id: stepper_stop
+    then:
+      - stepper.set_target:
+         id: tmc2209
+         target: !lambda 'return id(tmc2209).current_position;'
+
+## Some buttons for webinterface debugging
+button:
+  - platform: template
+    name: "Open"
+    on_press:
+      - script.execute: stepper_open
+  - platform: template
+    name: "Close"
+    on_press:
+      - script.execute: stepper_close
+  - platform: template
+    name: "Stop"
+    on_press:
+      - script.execute: stepper_stop
+
+## Now to define single actions and connect them to UART Input
+sensor:
+  - platform: uart_controller
+    id: ouruartcmd2
+    control_character_trigger: '.'
+    uart_controller: uart_ctrl_1
+    on_value:
+      then:
+        - script.execute: stepper_stop
+
+## Now to define toggle-actions and connect them to UART Input
+## Note: remember that binary_sensors remember their state and won't trigger if same character get's sent multiple times.
+binary_sensor:
+  - platform: uart_controller
+    id: ouruartcmd1
+    control_character_on: '('
+    control_character_off: ')'
+    uart_controller: uart_ctrl_1
+    on_press:
+      then:
+        - script.execute: stepper_open
+    on_release:
+      then:
+        - script.execute: stepper_close
